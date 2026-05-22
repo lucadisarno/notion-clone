@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth'
 import { PrismaClient } from '@prisma/client'
 import { headers } from 'next/headers'
 import { redirect, notFound } from 'next/navigation'
+import { PageEditor } from './PageEditor'
 
 const prisma = new PrismaClient()
 
@@ -16,17 +17,10 @@ export default async function PageDetail({ params }: { params: Promise<{ id: str
   if (!page) notFound()
 
   return (
-    <div style={{ padding: 40, maxWidth: 720 }}>
-      <a href="/dashboard" style={{ color: '#888', textDecoration: 'none', fontSize: 14 }}>
-        ← Torna alla dashboard
-      </a>
-      <h1 style={{ marginTop: 24 }}>{page.title}</h1>
-      <p style={{ color: '#888', fontSize: 14 }}>
-        Ultima modifica: {new Date(page.updatedAt).toLocaleDateString('it-IT')}
-      </p>
-      <div style={{ marginTop: 24, color: '#ccc' }}>
-        {page.content || 'Pagina vuota — aggiungi contenuto!'}
-      </div>
-    </div>
+    <PageEditor page={{
+      id: page.id,
+      title: page.title,
+      content: page.content || ''
+    }} />
   )
 }
