@@ -2,11 +2,13 @@
 
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce'
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
 
 export function PageEditor({ page }: { page: { id: string; title: string; content: string } }) {
+  const router = useRouter()
   const [title, setTitle] = useState(page.title)
   const [content, setContent] = useState(page.content)
 
@@ -16,6 +18,7 @@ export function PageEditor({ page }: { page: { id: string; title: string; conten
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: value })
     })
+    router.refresh()
   }, 500)
 
   const saveContent = useDebouncedCallback(async (value: string) => {

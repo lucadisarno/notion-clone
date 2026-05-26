@@ -21,6 +21,20 @@ export async function PATCH(
       ...(body.content !== undefined && { content: body.content }),
     }
   })
-
   return NextResponse.json(page)
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth.api.getSession({ headers: req.headers })
+  if (!session) return NextResponse.json({ error: 'Non autenticato' }, { status: 401 })
+
+  const { id } = await params
+
+  await prisma.page.delete({
+    where: { id, userId: session.user.id }
+  })
+  return new NextResponse(null, { status: 204 })
 }
