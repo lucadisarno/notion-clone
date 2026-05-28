@@ -1,5 +1,5 @@
 import { auth } from '@/lib/auth'
-import { PrismaClient } from '../generated/prisma'
+import { PrismaClient } from '@prisma/client'
 import { headers } from 'next/headers'
 import { redirect, notFound } from 'next/navigation'
 import { PageEditor } from './PageEditor'
