@@ -12,11 +12,17 @@ export function PageEditor({ page }: { page: { id: string; title: string; conten
   const [title, setTitle] = useState(page.title)
   const [content, setContent] = useState(page.content)
 
+  const sanitize = (value: string): string => {
+    if (typeof window === 'undefined') return value
+    const DOMPurify = require('dompurify')
+    return DOMPurify.sanitize(value)
+  }
+
   const saveTitle = useDebouncedCallback(async (value: string) => {
     await fetch(`/api/pages/${page.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: value })
+      body: JSON.stringify({ title: sanitize(value) })
     })
     router.refresh()
   }, 500)
@@ -25,7 +31,7 @@ export function PageEditor({ page }: { page: { id: string; title: string; conten
     await fetch(`/api/pages/${page.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: value })
+      body: JSON.stringify({ content: sanitize(value) })
     })
   }, 500)
 
